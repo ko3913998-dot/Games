@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css" />
+    <title>MK Patches - Game Modifications</title>
+</head>
+<body>
+    <canvas id="particlesCanvas"></canvas>
+    <div class="glitch-overlay">
+        <div class="scanlines"></div>
+        <div class="glitch-slice"></div>
+        <div class="glitch-slice"></div>
+        <div class="glitch-slice"></div>
+        <div class="static-noise"></div>
+        <div class="flicker-line"></div>
+        <div class="vhs-tracking"></div>
+    </div>
+    <script>
+        const canvas = document.getElementById('particlesCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouse = { x: null, y: null };
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.radius = Math.random() * 3 + 2;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+                
+                if (mouse.x && mouse.y) {
+                    const dx = mouse.x - this.x;
+                    const dy = mouse.y - this.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 150) {
+                        const force = (150 - dist) / 150;
+                        this.x -= dx * force * 0.02;
+                        this.y -= dy * force * 0.02;
+                    }
+                }
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(240, 240, 240, 0.6)';
+                ctx.fill();
+            }
+        }
+
+        const particleCount = Math.min(80, Math.floor(window.innerWidth / 20));
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        function connectParticles() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 150) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(240, 240, 240, ${0.15 * (1 - distance / 150)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            connectParticles();
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        document.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+        document.addEventListener('mouseleave', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+    </script>
+
+
+    <header>
+        <img src="assets/svg/logo.svg" alt="MusaabK99 logo" />
+        <nav class="navigation">
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#AboutMe">About</a></li>
+                <li><a href="#myworks">Works</a></li>
+                <li><a href="#contactMe">Contact</a></li>
+            </ul>
+        </nav>
+    
+    </header>
+
+    <section class="hero">
+        <img class="arrow" src="assets/svg/arrow.svg" alt="arrow" />
+        <div class="heroSub">
+          <h1 class="name">Im koussai</h1>
+          <h1 class="title">SoftWare Engineer</h1>
+          <div class="heroBtns">
+            <a class="hireMe" href="#contactMe">Hire me</a>
+            <a class="cv" href="assets/CV.pdf" download>Download CV
+              <img src="assets/svg/download.svg" alt="download button"
+            /></a>
+          </div>
+        </div>
+        <img src="Gemini.png" alt="Gemini" class="Gemini" />
+    </section>
+
+    <div class="section-divider"></div>
+
+    <section class="AboutMe" id="AboutMe">
+        <img 
+          src="v.png" style="width: 1000px;"
+          alt="AboutMe image"
+          class="AboutMeImg"
+        />  
+        <div class="textContainer">
+            <div class="textTitle">
+                <h1 class="koki">About</h1>
+                <h1 class="za3im">me</h1>
+                <img src="assets/svg/lightbulb.svg" alt="light" class="light" />
+            </div>
+            <p class="AboutMePar">
+                Hey, Im Koussai this is my first website, i hope you like it.
+            </p>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <section class="works" id="myworks">
+        <div class="worksContainer">
+            <div class="projectTitle">
+             <h1 class="aboutName">My recent</h1>
+             <h1 class="aboutTitle">works</h1>
+            </div>
+            <ul>
+                <li>
+                    <a href="#" onclick="openAdThenDownload(event,'https://www.profitablecpmratenetwork.com/xh4199qha?key=85e1ba99dec90e46ff9cf280a194f7fd','https://pastelink.net/z5bintfk')">
+                      <img src="downloa.jpg" alt="downloa">
+                    </a>
+                    <p class="card-text">Click here to Download FIFA 14 patch</p>
+
+                    <script>
+                        function openAdThenDownload(e, adLink,downloadLink) {
+                            e.preventDefault();
+                            let count = localStorage.getItem("clickCount") || 0;
+                            count++;
+                            if (count == 1) {
+                                window.open(adLink, "_blank");
+                            } else {
+                                window.open(downloadLink, "_blank");
+                                count = 0;
+                            }
+                            localStorage.setItem("clickCount", count);
+                        }
+                    </script>
+                </li>
+                <li>
+                    <a herf="#" onclick="openAdThenDownload(event,'https://www.profitablecpmratenetwork.com/xh4199qha?key=85e1ba99dec90e46ff9cf280a194f7fd','https://youtu.be/4DzIxuyQPZE')">
+                        <img src="download.jpg" alt="download">
+                    </a>
+                    <p class="card-text">Click here to watch patch tutorial</p>
+                    
+                    <script>
+                        function openAdThenDownload(e, adLink, downloadLink) {
+                            e.preventDefault();
+                            let count = localStorage.getItem("clickCount") || 0;
+                            count++;
+                            if (count == 1) {
+                                window.open(adLink, "_blank");
+                            } else {
+                                window.open(downloadLink, "_blank");
+                                count = 0;
+                            }
+                            localStorage.setItem("clickCount", count);
+                        }
+                    </script>
+                </li>
+                <li>
+                    <a herf="#" onclick="openAdThenDownload(event,'https://www.profitablecpmratenetwork.com/xh4199qha?key=85e1ba99dec90e46ff9cf280a194f7fd','https://www.mediafire.com/file/uy2mwy7cy74a40w/Creation_Master_15_Ultimate.rar/file')">
+                        <img src="images.jpg" alt="images">
+                    </a>
+                    <p class="card-text">Click here to Download Creation Master 15</p>
+                    
+                    <script>
+                        function openAdThenDownload(e, adLink, downloadLink) {
+                            e.preventDefault();
+                            let count = localStorage.getItem("clickCount") || 0;
+                            count++;
+                            if (count == 1) {
+                                window.open(adLink, "_blank");
+                            } else {
+                                window.open(downloadLink, "_blank");
+                                count = 0;
+                            }
+                            localStorage.setItem("clickCount", count);
+                        }
+                    </script>
+                </li>
+                <li>
+                    <a herf="#" onclick="openAdThenDownload(event,'https://www.profitablecpmratenetwork.com/xh4199qha?key=85e1ba99dec90e46ff9cf280a194f7fd','https://pcgd.net/dRDXHWWA4ZdgY5t/file','https://pcgd.net/wtnrMsocDBGLcrD/file')">
+                        <img src="koussai.jpg" alt="images">
+                    </a>
+                    <p class="card-text">Click here to Download Resident Evil 6</p>
+                
+                    <script>
+                        function openAdThenDownload(e, adLink, downloadLink) {
+                            e.preventDefault();
+                            let count = localStorage.getItem("clickCount") || 0;
+                            count++;
+                            if (count == 1) {
+                                window.open(adLink, "_blank");
+                            }    
+                            else if (count == 2) {
+                                window.open(downloadLink, "_blank");
+                            }
+                            else if (count == 3) {
+                                window.open('https://pcgd.net/wtnrMsocDBGLcrD/file', "_blank");
+                                count = 0;
+                            }
+                            localStorage.setItem("clickCount", count);
+                        }
+                    </script>
+                </li>
+                <li>
+                    <a herf="#" onclick="openAdThenDownload(event,'https://www.profitablecpmratenetwork.com/xh4199qha?key=85e1ba99dec90e46ff9cf280a194f7fd','https://dl1.tlauncher.org/f.php?f=files%2FTLauncher-Installer-1.9.5.1.exe')">
+                        <img src="mama.jpg" alt="mama">
+                    </a>
+                    <p class="card-text">Click here to Download Minecraft Java PC</p>
+                
+                    <script>
+                        function openAdThenDownload(e, adLink, downloadLink) {
+                            e.preventDefault();
+                            let count = localStorage.getItem("clickCount") || 0;
+                            count++;
+                            if (count == 1) {
+                                window.open(adLink, "_blank");
+                            } else {
+                                window.open(downloadLink, "_blank");
+                                count = 0;
+                            }
+                            localStorage.setItem("clickCount", count);
+                        }
+                    </script>
+                </li>
+                <li>
+                    <a herf="#" onclick="openAdThenDownload(event,'https://www.profitablecpmratenetwork.com/xh4199qha?key=85e1ba99dec90e46ff9cf280a194f7fd','https://pcgd.net/vXYF9QmuScYGl1h/file')">
+                        <img src="appa.jpg" alt="appa">
+                    </a>
+                    <p class="card-text">Click here to Download Hollow Knight PC</p>
+                
+                    <script>
+                        function openAdThenDownload(e, adLink, downloadLink) {
+                            e.preventDefault();
+                            let count = localStorage.getItem("clickCount") || 0;
+                            count++;
+                            if (count == 1) {
+                                window.open(adLink, "_blank");
+                            } else {
+                                window.open(downloadLink, "_blank");
+                                count = 0;
+                            }
+                            localStorage.setItem("clickCount", count);
+                        }
+                    </script>
+                </li>
+                <li>
+                    <a herf="#" onclick="openAdThenDownload(event,'https://www.profitablecpmratenetwork.com/xh4199qha?key=85e1ba99dec90e46ff9cf280a194f7fd','https://pcgd.net/eMqlMR6ntoI9MFL/file')">
+                        <img src="baba.jpg" alt="baba">
+                    </a>
+                    <p class="card-text">Click here to Download GTA San Andreas PC</p>
+                
+                    <script>
+                        function openAdThenDownload(e, adLink, downloadLink) {
+                            e.preventDefault();
+                            let count = localStorage.getItem("clickCount") || 0;
+                            count++;
+                            if (count == 1) {
+                                window.open(adLink, "_blank");
+                            } else {
+                                window.open(downloadLink, "_blank");
+                                count = 0;
+                            }
+                            localStorage.setItem("clickCount", count);
+                        }
+                    </script>
+                </li>
+                <li>
+                    <a herf="#" onclick="openAdThenDownload(event,'https://www.profitablecpmratenetwork.com/xh4199qha?key=85e1ba99dec90e46ff9cf280a194f7fd','https://files.apkdlink.com/gtasanandreas/gtasanandreas-2.11.264.apk')">
+                        <img src="aaaa.jpg" alt="aaaa">
+                    </a>
+                    <p class="card-text">Click here to Download GTA San Andreas Android</p>
+                
+                    <script>
+                        function openAdThenDownload(e, adLink, downloadLink) {
+                            e.preventDefault();
+                            let count = localStorage.getItem("clickCount") || 0;
+                            count++;
+                            if (count == 1) {
+                                window.open(adLink, "_blank");
+                            } else {
+                                window.open(downloadLink, "_blank");
+                                count = 0;
+                            }
+                            localStorage.setItem("clickCount", count);
+                        }
+                    </script>
+                </li>
+                <li>
+                    <a herf="#" onclick="openAdThenDownload(event,'https://www.profitablecpmratenetwork.com/xh4199qha?key=85e1ba99dec90e46ff9cf280a194f7fd','https://files.apkdlink.com/minecraft/minecraft-minecraft-apk-latest-version-january-2026.apk')">
+                        <img src="apps.58378.14492077886571533.338a563a-86e7-47b1-b9dc-41cf411f5dcd.jpg" alt="apps">
+                    </a>
+                    <p class="card-text">Click here to Download Minecraft Android</p>
+                
+                    <script>
+                        function openAdThenDownload(e, adLink, downloadLink) {
+                            e.preventDefault();
+                            let count = localStorage.getItem("clickCount") || 0;
+                            count++;
+                            if (count == 1) {
+                                window.open(adLink, "_blank");
+                            } else {
+                                window.open(downloadLink, "_blank");
+                                count = 0;
+                            }
+                            localStorage.setItem("clickCount", count);
+                        }
+                    </script>
+                </li>
+                <li>
+                    <a herf="#" onclick="openAdThenDownload(event,'https://www.profitablecpmratenetwork.com/xh4199qha?key=85e1ba99dec90e46ff9cf280a194f7fd','https://cdn1.trashbytes.to/Cuphead.v1.3.4.7z?verify=1774875017-puHx7mqtBIIsK4Yr9NvgrQAg7bk0TOW7gG0KJXLoc8Y%3D')">
+                        <img src="head.png" alt="head">
+                    </a>
+                    <p class="card-text">Click here to Download Cuphead PC</p>
+                
+                    <script>
+                        function openAdThenDownload(e, adLink, downloadLink) {
+                            e.preventDefault();
+                            let count = localStorage.getItem("clickCount") || 0;
+                            count++;
+                            if (count == 1) {
+                                window.open(adLink, "_blank");
+                            } else {
+                                window.open(downloadLink, "_blank");
+                                count = 0;
+                            }
+                            localStorage.setItem("clickCount", count);
+                        }
+                    </script>
+                </li>
+                <li>
+                    <a herf="#" onclick="openAdThenDownload(event,'https://www.profitablecpmratenetwork.com/xh4199qha?key=85e1ba99dec90e46ff9cf280a194f7fd','https://cdn1.trashbytes.to/Forza.Horizon.5.v688.109.rar?verify=1774875267-2NT9CW%2Fkm0%2BnK2O9bLCZATwu2emN6CoCK3sMkh7oUvE%3D')">
+                        <img src="forza.jpg" alt="forza">
+                    </a>
+                    <p class="card-text">Click here to Download Forza Horizon 5 PC</p>
+                
+                    <script>
+                        function openAdThenDownload(e, adLink, downloadLink) {
+                            e.preventDefault();
+                            let count = localStorage.getItem("clickCount") || 0;
+                            count++;
+                            if (count == 1) {
+                                window.open(adLink, "_blank");
+                            } else {
+                                window.open(downloadLink, "_blank");
+                                count = 0;
+                            }
+                            localStorage.setItem("clickCount", count);
+                        }
+                    </script>
+                </li>
+                <li>
+                    <a herf="#" onclick="openAdThenDownload(event,'https://www.profitablecpmratenetwork.com/xh4199qha?key=85e1ba99dec90e46ff9cf280a194f7fd','https://dl.apkvision.org/dead-cells/Dead-Cells-v3.5.9-unlocked-apkvision.apk')">
+                        <img src="cells.jpg" alt="cells">
+                    </a>
+                    <p class="card-text">Click here to Download Dead Cells Android</p>
+                
+                    <script>
+                        function openAdThenDownload(e, adLink, downloadLink) {
+                            e.preventDefault();
+                            let count = localStorage.getItem("clickCount") || 0;
+                            count++;
+                            if (count == 1) {
+                                window.open(adLink, "_blank");
+                            } else {
+                                window.open(downloadLink, "_blank");
+                                count = 0;
+                            }
+                            localStorage.setItem("clickCount", count);
+                        }
+                    </script>
+                </li>
+                <li>
+                    <a herf="#" onclick="openAdThenDownload(event,'https://www.profitablecpmratenetwork.com/xh4199qha?key=85e1ba99dec90e46ff9cf280a194f7fd','https://cdn1.trashbytes.to/Resident.Evil.4.2005.v1.1.0.rar?verify=1774875812-UwhEbp0hAvbjLFiMTAAwzg2kQ0jpibVIvtiFEo6YowE%3D')">
+                        <img src="evl 4.jpg" alt="evl">
+                    </a>
+                    <p class="card-text">Click here to Download Resident Evil 4</p>
+                
+                    <script>
+                        function openAdThenDownload(e, adLink, downloadLink) {
+                            e.preventDefault();
+                            let count = localStorage.getItem("clickCount") || 0;
+                            count++;
+                            if (count == 1) {
+                                window.open(adLink, "_blank");
+                            } else {
+                                window.open(downloadLink, "_blank");
+                                count = 0;
+                            }
+                            localStorage.setItem("clickCount", count);
+                        }
+                    </script>
+                </li>
+                <li>
+                    <a herf="#" onclick="openAdThenDownload(event,'https://www.profitablecpmratenetwork.com/xh4199qha?key=85e1ba99dec90e46ff9cf280a194f7fd','https://apks.trulhost.com/HollowKnight-1.5.78.apk')">
+                        <img src="knight.jpg" alt="knight">
+                    </a>
+                    <p class="card-text">Click here to Download Hollow Knight Android</p>
+                
+                    <script>
+                        function openAdThenDownload(e, adLink, downloadLink) {
+                            e.preventDefault();
+                            let count = localStorage.getItem("clickCount") || 0;
+                            count++;
+                            if (count == 1) {
+                                window.open(adLink, "_blank");
+                            } else {
+                                window.open(downloadLink, "_blank");
+                                count = 0;
+                            }
+                            localStorage.setItem("clickCount", count);
+                        }
+                    </script>
+                </li>
+                <li>
+                    <a herf="#" onclick="openAdThenDownload(event,'https://www.profitablecpmratenetwork.com/xh4199qha?key=85e1ba99dec90e46ff9cf280a194f7fd','https://cdn1.trashbytes.to/JoJos.Bizarre.Adventure.ASBR.v2.3.3.rar?verify=1774875619-SmBRE%2FcQ2Zr4R8YrLtq2iFIb2LU4rwYsL%2FLqYbFmYaA%3D')">
+                        <img src="kok.jpg" alt="kok">
+                    </a>
+                    <p class="card-text">Click here to Download JoJo's Bizarre Adventure</p>
+                
+                    <script>
+                        function openAdThenDownload(e, adLink, downloadLink) {
+                            e.preventDefault();
+                            let count = localStorage.getItem("clickCount") || 0;
+                            count++;
+                            if (count == 1) {
+                                window.open(adLink, "_blank");
+                            } else {
+                                window.open(downloadLink, "_blank");
+                                count = 0;
+                            }
+                            localStorage.setItem("clickCount", count);
+                        }
+                    </script>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <section class="contactContainer" id="contactMe">
+        <div class="contactTitle">
+            <h1 class="aboutName">Contact</h1>
+            <h1 class="aboutTitle">me</h1>
+        </div>
+        <div class="contact">
+            <div class="emailAndPhone">
+                <img src="assets/svg/Email.svg" alt="email logo" />
+                <a href="mailto:zzzzzzzz3129@gmail,com"
+                  ><h3>zzzzzzzz3129@gmail.com</h3></a
+                >
+            </div>
+            <div class="emailAndPhone">
+               <img src="assets/svg/phone.svg" alt="phone logo" />
+               <h3>+0541675366</h3>
+            </div>
+        </div>
+        <div class="socialMedia">
+            <a
+              href="https://www.instagram.com/mk_99_99_99/?utm_source=ig_web_button_share_sheet"
+              target="_blank"
+              ><img src="instagrame.png" alt="my instagram account"
+            /></a>
+        </div>
+    </section>
+
+    <footer>
+        <p>Built by MK.</p>
+    </footer>
+
+</body>
+</html>
