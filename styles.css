@@ -1154,3 +1154,57 @@ body.rtl .close-btn {
     .works-grid { grid-template-columns: 1fr; }
     .contact-card { width: 100%; justify-content: center; }
 }
+
+@media (max-width: 768px) {
+
+    body,
+    html {
+        overflow-x: hidden;
+        overflow-y: auto !important;
+        height: auto !important;
+    }
+
+    .games-grid,
+    .works-container,
+    section {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        padding: 20px 10px !important;
+        gap: 20px !important;
+        height: auto !important;
+        width: 100% !important;
+    }
+
+    .game-card,
+    .work-item,
+    .box {
+        width: calc(100% - 40px) !important;
+        max-width: 350px;
+        margin: 10px auto !important;
+        display:block !important;
+        position: relative !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+     }
+}
+
+@media (max-width: 768px) {
+
+    .work-item,
+    .timeline-item,
+    .card {
+        left: 0 !important;
+        right: 0 !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        transform: none !important;
+        width: 90% !important;
+        position: relative !important;
+    }
+
+    .timeline::before,
+    .main-line {
+        display: none !important;
+    }
+}
